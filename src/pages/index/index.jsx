@@ -1,9 +1,13 @@
 import React from 'react'
 
+import AppBar from 'components/AppBar';
+import Header from './components/Header/Header';
+import CardGrid from './components/CardGrid/CardGrid';
 const PageIndex = () => (
     <React.Fragment>
-        <h1>This is main page</h1>
-        <h3 style={{ color: '#0f0' }}>TODO</h3>
+        <AppBar/>
+        <Header/>
+        <CardGrid/>
     </React.Fragment>
 );
 
