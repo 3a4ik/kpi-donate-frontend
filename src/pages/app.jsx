@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
 import Page404 from './404/404'
 import PageIndex from './index'
