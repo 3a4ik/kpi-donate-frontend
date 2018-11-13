@@ -18,6 +18,7 @@
 }
 
 .card-link {
+    background-color: white;
     color: inherit;
     border: 1px solid #000;
 }
@@ -29,4 +30,8 @@
 
 .progress {
     height: 5px;
+}
+
+.form-control {
+    border-radius: 0;
 }
