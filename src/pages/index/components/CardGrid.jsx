@@ -27,6 +27,18 @@ const CardGrid = () => {
                    }
                 </Row>
             </Container>
+            {/* WARNING TODO: remove */}
+            <form action="https://kpi-donate.herokuapp.com/maecenas/confirm" method="POST">
+                <script
+                    src="https://checkout.stripe.com/checkout.js" className="stripe-button"
+                    data-key="pk_test_3gkka9ySkvjgw9ctuNbalkOw"
+                    data-amount="999"
+                    data-name="kpi-donate"
+                    data-description="Example charge"
+                    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                    data-locale="auto">
+                </script>
+            </form>
         </section>
     )
 }
