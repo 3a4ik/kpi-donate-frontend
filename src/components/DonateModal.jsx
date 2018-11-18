@@ -6,14 +6,15 @@ import PaymentForm from 'components/PaymentForm'
 export default class DonateModal extends React.Component {
     state = {
         modal: false,
-        donationAmount: 0
+        donationAmount: 0,
+        donatedSuccessfully: false
     };
 
     toggle = () => {
         this.setState({
             modal: !this.state.modal
         });
-    }
+    };
 
     onDonateAmountChange = (e) => {
         const amount = e.target.value !== '' ? e.target.value : 0;
@@ -22,18 +23,40 @@ export default class DonateModal extends React.Component {
             donationAmount: amount
         }));
         
-    }
+    };
 
     onDonateAmountKeyDown = (e) => {
         if (isNaN(e.key) && e.key !== "Backspace" && e.key !== "Delete") {
             e.preventDefault();
         }
-    }
+    };
+
+    makeDonation = () => {
+        this.setState(() => ({
+            donatedSuccessfully: true
+        }));
+    };
 
     render() {
+        if (this.state.donatedSuccessfully) {
+            return (
+                <div>
+                    <Button className="card-link py-3 px-5 text-uppercase rounded-0" role="button" onClick={this.toggle}>Upload image</Button>
+                    <Modal isOpen={this.state.modal} toggle={this.toggle} size='lg' centered>
+                        <ModalHeader className="d-inline-block text-center" toggle={this.toggle}>Thank you!</ModalHeader>
+                        <ModalBody>
+                            <div>TODO: upload image</div>
+                        </ModalBody>
+                    </Modal>
+                </div>
+            );
+        }
+
         return (
             <div>
-                <Button className="card-link py-3 px-5 text-uppercase rounded-0" role="button" onClick={this.toggle}>Donate</Button>
+                { this.props.isOpen &&
+                    <Button className="card-link py-3 px-5 text-uppercase rounded-0" role="button" onClick={this.toggle}>Donate</Button>
+                }
                 <Modal isOpen={this.state.modal} toggle={this.toggle} size='lg' centered>
                     <ModalHeader className="d-inline-block text-center" toggle={this.toggle}>Donation</ModalHeader>
                     <ModalBody>
@@ -68,7 +91,9 @@ export default class DonateModal extends React.Component {
                                         <PaymentForm 
                                             name={this.props.pTitle}
                                             description={this.props.pDescription}
-                                            amount={this.state.donationAmount} />
+                                            amount={this.state.donationAmount}
+                                            projectId={this.props.pID}
+                                            makeDonation={this.makeDonation} />
                                     </FormGroup>
                             </Col>
                         </Row>
