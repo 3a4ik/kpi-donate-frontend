@@ -1,0 +1,11 @@
+body {
+    font-family: 'Lato', sans-serif;
+}
+
+.modal-header {
+    border: none;
+}
+
+.modal-title {
+    display: inline-block;
+}

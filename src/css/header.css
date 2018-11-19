@@ -1,0 +1,8 @@
+.headerImg {
+    height: 50vh;
+    object-fit: cover;
+}
+.headerText {
+    border: 3px solid #fff;
+    border-left-color: transparent;
+}
