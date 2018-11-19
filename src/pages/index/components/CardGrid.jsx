@@ -7,7 +7,8 @@ import loader from './img/Rolling-1s-200px.svg'
 
 class CardGrid extends React.Component {
     state = {
-        projects: []
+        projects: [],
+        loading: true
     };
 
     componentWillMount() {
@@ -15,7 +16,8 @@ class CardGrid extends React.Component {
             .then((res) => {
                 if (res.data) {
                     this.setState(() => ({
-                        projects: res.data
+                        projects: res.data,
+                        loading: false
                     }));
                 }
             })
@@ -25,7 +27,7 @@ class CardGrid extends React.Component {
     }
 
     render() {
-        if (this.state.projects.length === 0) {
+        if (this.state.loading) {
             return (
                 <section>
                     <Container fluid className="text-center">

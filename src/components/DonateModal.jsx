@@ -11,7 +11,9 @@ export default class DonateModal extends React.Component {
         modal: false,
         donationAmount: 0,
         donatedSuccessfully: false,
-        token: ''
+        token: '',
+        donates: [],
+        donatesLoading: true
     };
     userImage = React.createRef();
 
@@ -95,6 +97,24 @@ export default class DonateModal extends React.Component {
         }
     };
 
+    componentDidMount = () => {
+        axios.get('https://kpi-donate.herokuapp.com/project/' + this.props.pID)
+            .then((res) => {
+                console.log(res);
+                if (res.data) {
+                    const donates = res.data.donates;
+                    console.log(donates);
+                    this.setState(() => ({
+                        donates,
+                        donatesLoading: false
+                    }));
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
     render() {
         if (this.state.donatedSuccessfully) {
             return <div>
@@ -167,6 +187,13 @@ export default class DonateModal extends React.Component {
                                             projectId={this.props.pID}
                                             makeDonation={this.makeDonation} />
                                     </FormGroup>
+
+                                    <h5>Hall of Fame</h5>
+                                    <p>
+                                        {this.state.donates.map((donate) => (
+                                            <img src={donate.image} alt="" key={donate.id} />
+                                        ))}
+                                    </p>
                             </Col>
                         </Row>
                     </ModalBody>
