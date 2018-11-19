@@ -1,14 +1,19 @@
 import React from 'react';
-import { Row, Col, Button, Modal, ModalHeader, ModalBody, Card, CardBody, CardTitle, CardImg, CardText, Progress, FormGroup, Label, Input } from 'reactstrap';
+import { Row, Col, Button, Modal, ModalHeader, ModalBody, Card, CardBody, CardTitle, CardImg, CardText, Progress, FormGroup, Label, Input, Form } from 'reactstrap';
 
 import PaymentForm from 'components/PaymentForm'
+
+import Compressor from 'compressorjs';
+import axios from 'axios'
 
 export default class DonateModal extends React.Component {
     state = {
         modal: false,
         donationAmount: 0,
-        donatedSuccessfully: false
+        donatedSuccessfully: false,
+        token: ''
     };
+    userImage = React.createRef();
 
     toggle = () => {
         this.setState({
@@ -31,31 +36,98 @@ export default class DonateModal extends React.Component {
         }
     };
 
-    makeDonation = () => {
+    makeDonation = (resToken) => {
+        const token = resToken;
         this.setState(() => ({
-            donatedSuccessfully: true
+            donatedSuccessfully: true,
+            token
         }));
+    };
+
+    getBase64 = (file) => (
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        })
+    );
+
+    handleImageUpload = (e) => {
+        e.preventDefault();
+
+        if (this.userImage.current.files.length === 0) {
+            alert("Please, select an image");
+        } else {
+            if (
+                this.userImage.current.files[0].type !== 'image/jpeg'
+                && this.userImage.current.files[0].type !== 'image/png'
+                && this.userImage.current.files[0].type !== 'image/bmp'
+            ) {
+                alert("Image file is invalid");
+            } else {
+                const getBase64 = this.getBase64;
+                const token = this.state.token;
+                new Compressor(this.userImage.current.files[0], {
+                    width: 75,
+                    height: 75,
+                    success(result) {
+                        console.log(result);
+                        getBase64(result)
+                            .then((base64Img) => {
+                                axios.post('https://kpi-donate.herokuapp.com/donate/image', {
+                                    image: base64Img,
+                                    token
+                                })
+                                    .then((res) => {
+                                        console.log(res);
+                                    })
+                                    .catch((err) => {
+                                        console.log(err);
+                                    });
+                            });
+                    },
+                    error(err) {
+                        console.log(err.message);
+                    },
+                });
+            }
+        }
     };
 
     render() {
         if (this.state.donatedSuccessfully) {
-            return (
-                <div>
-                    <Button className="card-link py-3 px-5 text-uppercase rounded-0" role="button" onClick={this.toggle}>Upload image</Button>
-                    <Modal isOpen={this.state.modal} toggle={this.toggle} size='lg' centered>
-                        <ModalHeader className="d-inline-block text-center" toggle={this.toggle}>Thank you!</ModalHeader>
-                        <ModalBody>
-                            <div>TODO: upload image</div>
-                        </ModalBody>
-                    </Modal>
-                </div>
-            );
+            return <div>
+                <Button className="card-link py-3 px-5 text-uppercase rounded-0" role="button" onClick={this.toggle}>Upload image</Button>
+                <Modal isOpen={this.state.modal} toggle={this.toggle} size='lg' centered>
+                    <ModalHeader className="d-inline-block text-center" toggle={this.toggle}>Thank you!</ModalHeader>
+                    <ModalBody>
+                        <Row>
+                            <Col md={{size: 6, order: 2}} className="justify-content-center">
+                                <Form onSubmit={this.handleImageUpload}>
+                                    <FormGroup>
+                                        <Label for="userImage" className="rounded-0 card-link p-2">Upload own avatar</Label>
+                                        <input type="file" id="userImage" className="file-uploader" ref={this.userImage} accept="image/*" />
+                                    </FormGroup>
+
+                                    <Button type="submit" className="card-link py-3 px-5 text-uppercase rounded-0" role="button">Submit</Button>
+                                </Form>
+                            </Col>
+                            <Col md={{size: 6, order: 1}}>
+                                <h4>Thank you for your donation!</h4>
+                                <h5>Now you can upload your photo or use default.</h5>
+                                <h4>KPI should know its heroes!</h4>
+                            </Col>
+                        </Row>
+                    </ModalBody>
+                </Modal>
+            </div>;
         }
 
         return (
             <div>
                 { this.props.isOpen &&
-                    <Button className="card-link py-3 px-5 text-uppercase rounded-0" role="button" onClick={this.toggle}>Donate</Button>
+                <Button className="card-link py-3 px-5 text-uppercase rounded-0" role="button" onClick={this.toggle}>Donate</Button>
                 }
                 <Modal isOpen={this.state.modal} toggle={this.toggle} size='lg' centered>
                     <ModalHeader className="d-inline-block text-center" toggle={this.toggle}>Donation</ModalHeader>

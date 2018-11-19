@@ -18,7 +18,7 @@ const onToken = (projectId, amount, makeDonation) => (token) => (
     })
         .then((res) => {
             if (res.data.status && res.data.status === "succeeded") {
-                makeDonation();
+                makeDonation(res.data.token);
             }
         })
         .catch((err) => {

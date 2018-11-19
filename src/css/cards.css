@@ -40,3 +40,7 @@
     background-color: rgba(100, 100, 100, 0.1);
     padding: 10px;
 }
+
+.file-uploader {
+    display: none;
+}

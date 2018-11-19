@@ -1,8 +1,9 @@
 import React from 'react';
-import { Row, Container } from 'reactstrap';
+import { Row, Container, Col } from 'reactstrap';
 import ProjectCard from './СardComponent'
 import "css/cards.css"
 import axios from 'axios';
+import loader from './img/Rolling-1s-200px.svg'
 
 class CardGrid extends React.Component {
     state = {
@@ -24,6 +25,18 @@ class CardGrid extends React.Component {
     }
 
     render() {
+        if (this.state.projects.length === 0) {
+            return (
+                <section>
+                    <Container fluid className="text-center">
+                        <h2 className='card-heading d-inline-flex my-5 py-4 px-5 text-uppercase text-center'>Projects</h2>
+                        <Row className="d-flex mx-md-3 justify-content-center">
+                            <img src={loader} alt="Loading..."  />
+                        </Row>
+                    </Container>
+                </section>
+            )
+        }
         return (
             <section>
                 <Container fluid className="text-center">
