@@ -6,6 +6,8 @@ import PaymentForm from 'components/PaymentForm'
 import Compressor from 'compressorjs';
 import axios from 'axios'
 
+import { INDEX } from 'config/routes'
+
 export default class DonateModal extends React.Component {
     state = {
         modal: false,
@@ -70,11 +72,11 @@ export default class DonateModal extends React.Component {
             } else {
                 const getBase64 = this.getBase64;
                 const token = this.state.token;
+
                 new Compressor(this.userImage.current.files[0], {
                     width: 75,
                     height: 75,
                     success(result) {
-                        console.log(result);
                         getBase64(result)
                             .then((base64Img) => {
                                 axios.post('https://kpi-donate.herokuapp.com/donate/image', {
@@ -82,7 +84,7 @@ export default class DonateModal extends React.Component {
                                     token
                                 })
                                     .then((res) => {
-                                        console.log(res);
+                                        window.location.replace(INDEX);
                                     })
                                     .catch((err) => {
                                         console.log(err);
@@ -100,10 +102,9 @@ export default class DonateModal extends React.Component {
     componentDidMount = () => {
         axios.get('https://kpi-donate.herokuapp.com/project/' + this.props.pID)
             .then((res) => {
-                console.log(res);
                 if (res.data) {
                     const donates = res.data.donates;
-                    console.log(donates);
+
                     this.setState(() => ({
                         donates,
                         donatesLoading: false
