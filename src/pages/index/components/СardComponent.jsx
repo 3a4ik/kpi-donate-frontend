@@ -9,7 +9,7 @@ const CardComponent = (props) => {
         ? `Raised funds: ${props.pMoney} / ${props.pNeeded + ' \u20B4'}`
         : `Successfully collected ${props.pNeeded + ' \u20B4'}!`;
 
-    const cardClass = props.isOpen ? "" : "project-completed-overlay";
+    const cardClass = props.isOpen ? "h-100" : "project-completed-overlay";
 
     return (
         <Col xs={12} sm={6} lg={4} xl={3} className="mb-5">
