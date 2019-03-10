@@ -10,8 +10,10 @@ const CURRENCY = 'UAH';
 
 const fromUAHToCoins = amount => amount * 100;
 
-const onToken = (projectId, amount, makeDonation) => (token) => (
-    axios.post(PAYMENT_SERVER_URL, {
+const onToken = (projectId, amount, makeDonation, setModalLoading) => (token) => {
+    setModalLoading(true);
+
+    return axios.post(PAYMENT_SERVER_URL, {
         projectId,
         amount: fromUAHToCoins(amount),
         stripeToken: token.id
@@ -20,18 +22,22 @@ const onToken = (projectId, amount, makeDonation) => (token) => (
             if (res.data.status && res.data.status === "succeeded") {
                 makeDonation(res.data.token);
             }
+
+            setModalLoading(false);
         })
         .catch((err) => {
             console.log(err)
+
+            setModalLoading(false);
         })
-);
+};
 
 const PaymentForm = (props) => (
   <StripeCheckout
     name={props.name}
     description={props.description}
     amount={fromUAHToCoins(props.amount)}
-    token={onToken(props.projectId, props.amount, props.makeDonation)}
+    token={onToken(props.projectId, props.amount, props.makeDonation, props.setModalLoading)}
     currency={CURRENCY}
     stripeKey={STRIPE_PUBLISHABLE} >
       <input type='hidden' name='amount' value={props.amount} />

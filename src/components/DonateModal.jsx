@@ -8,6 +8,8 @@ import axios from 'axios'
 
 import { INDEX } from 'config/routes'
 
+import loader from '../pages/index/components/img/Rolling-1s-200px.svg'
+
 export default class DonateModal extends React.Component {
     state = {
         modal: false,
@@ -15,7 +17,8 @@ export default class DonateModal extends React.Component {
         donatedSuccessfully: false,
         token: '',
         donates: [],
-        donatesLoading: true
+        donatesLoading: true,
+        loading: false
     };
     userImage = React.createRef();
 
@@ -70,6 +73,8 @@ export default class DonateModal extends React.Component {
             ) {
                 alert("Image file is invalid");
             } else {
+                this.setState({ loading: true });
+
                 const getBase64 = this.getBase64;
                 const token = this.state.token;
 
@@ -95,6 +100,8 @@ export default class DonateModal extends React.Component {
                         console.log(err.message);
                     },
                 });
+
+                this.setState({ loading: false });
             }
         }
     };
@@ -116,7 +123,25 @@ export default class DonateModal extends React.Component {
             });
     };
 
+    setLoading = loading => {
+        this.setState({ loading });
+    };
+
     render() {
+        if (this.state.loading) {
+            return <div>
+                <Button className="card-link py-3 px-5 text-uppercase rounded-0" role="button" onClick={this.toggle}>Upload image</Button>
+                <Modal isOpen={this.state.modal} toggle={this.toggle} size='lg' centered>
+                    <ModalHeader className="d-inline-block text-center" toggle={this.toggle}>Pending payment...</ModalHeader>
+                    <ModalBody>
+                        <Row className="d-flex justify-content-center">
+                            <img src={loader} alt="Loading..." />
+                        </Row>
+                    </ModalBody>
+                </Modal>
+            </div>
+        }
+        
         if (this.state.donatedSuccessfully) {
             return <div>
                 <Button className="card-link py-3 px-5 text-uppercase rounded-0" role="button" onClick={this.toggle}>Upload image</Button>
@@ -156,7 +181,10 @@ export default class DonateModal extends React.Component {
                         <Row>
                             <Col md={{size: 6, order: 2}} className="justify-content-center">
                                 <Card className="text-center">
-                                    <CardImg top src={this.props.pImg} alt={this.props.pTitle} />
+                                    <img src={this.props.pImg} alt={this.props.pTitle} class="card-img-top" onError={e => {
+                                        e.target.onerror = null;
+                                        e.target.src = 'https://via.placeholder.com/600x384';
+                                    }} />
                                     <Progress className="mt-4 mx-0 rounded-0" color="secondary" value={this.props.pMoney} max={this.props.pNeeded} />
                                     <p className="text-muted mx-0 mb-0">Raised funds: {this.props.pMoney} / {this.props.pNeeded + ' \u20B4'}</p>
                                     <CardBody className="px-0">
@@ -186,7 +214,9 @@ export default class DonateModal extends React.Component {
                                             description={this.props.pDescription}
                                             amount={this.state.donationAmount}
                                             projectId={this.props.pID}
-                                            makeDonation={this.makeDonation} />
+                                            makeDonation={this.makeDonation}
+                                            setModalLoading={this.setLoading} 
+                                        />
                                     </FormGroup>
 
                                     <h5>Hall of Fame</h5>

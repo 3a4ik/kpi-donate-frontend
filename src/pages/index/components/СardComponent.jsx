@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Card, CardImg, CardTitle, CardText, CardFooter, CardBody, Progress } from 'reactstrap';
+import { Col, Card, CardTitle, CardText, CardFooter, CardBody, Progress } from 'reactstrap';
 
 import DonateModal from 'components/DonateModal'
 import "css/cards.css"
@@ -14,7 +14,11 @@ const CardComponent = (props) => {
     return (
         <Col xs={12} sm={6} lg={4} xl={3} className="mb-5">
             <Card className={cardClass}>
-                <CardImg top src={props.pImg} alt={props.pTitle} />
+                <img src={props.pImg} alt={props.pTitle} class="card-img-top" onError={e => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://via.placeholder.com/600x384';
+                }} />
+                {/* <CardImg top src={props.pImg} alt={props.pTitle} onError={() => 'https://via.placeholder.com/600x384'} /> */}
                 <Progress className="mt-4 mx-0 rounded-0" color="secondary" value={props.pMoney} max={props.pNeeded} />
                 <p className="text-muted mx-0 mb-0">{fundsText}</p>
                 <CardBody className="body px-0">
